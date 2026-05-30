@@ -5,13 +5,25 @@ import ImageInfoPanel from './components/ImageInfoPanel'
 import ResultBox from './components/ResultBox'
 import HistoryPanel from './components/HistoryPanel'
 import DetailModal from './components/DetailModal'
+
 const API = 'http://localhost:5000/predict'
 const MAX_HISTORY = 5
 
+// ── Helper Functions ──────────────────────────────────────────────────────────
+function getImageDimensions(file) {
+  return new Promise((resolve) => {
+    const url = URL.createObjectURL(file)
+    const img = new Image()
+    img.onload = () => {
+      resolve({ width: img.naturalWidth, height: img.naturalHeight })
+      URL.revokeObjectURL(url)
+    }
+    img.onerror = () => resolve({ width: null, height: null })
+    img.src = url
+  })
+}
 
-
-
-// ── Main Component ────────────
+// ── Main Component ────────────────────────────────────────────────────────────
 export default function App() {
   const [file, setFile]           = useState(null)
   const [preview, setPreview]     = useState(null)
@@ -189,30 +201,30 @@ export default function App() {
               cursor: 'pointer', zIndex: 2,
             }}
             >
-             <div style={{ position: 'relative', display: 'flex' }}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9a6810"
-            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="12 8 12 12 14 14"/>
-            <path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"/>
-          </svg>
-              <div style={{
-                position: 'absolute',
-                top: '-5px', right: '-5px',
-                width: '14px', height: '14px',
-                borderRadius: '50%',
-                background: '#e8a320',
-                border: '2px solid rgba(255,253,230,0.98)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '0.5rem', fontWeight: '800', color: '#5a3a06',
-              }}>
-                {history.length}
+              <div style={{ position: 'relative', display: 'flex' }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9a6810"
+                  strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="12 8 12 12 14 14"/>
+                  <path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"/>
+                </svg>
+                <div style={{
+                  position: 'absolute',
+                  top: '-5px', right: '-5px',
+                  width: '14px', height: '14px',
+                  borderRadius: '50%',
+                  background: '#e8a320',
+                  border: '2px solid rgba(255,253,230,0.98)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '0.5rem', fontWeight: '800', color: '#5a3a06',
+                }}>
+                  {history.length}
+                </div>
               </div>
-            </div>
             </button>
           )}
 
           {/* ── Drop Zone ── */}
-            <DropZone
+          <DropZone
             status={status}
             preview={preview}
             drag={drag}
@@ -267,7 +279,7 @@ export default function App() {
             onCopy={onCopy}
             onDownload={onDownload}
           />
-             </div>
+        </div>
           
         {/* ── Footer ── */}
         <p style={{ textAlign: 'center', color: 'rgba(130,90,10,0.4)', fontSize: '0.75rem', marginTop: '1.5rem', letterSpacing: '0.05em' }}>
@@ -282,14 +294,15 @@ export default function App() {
           onClose={() => setShowHistory(false)}
           onSelect={(item) => { setSelectedItem(item); setShowHistory(false) }}
         />
-        )}
+      )}
+
       {/* ── Detail Modal ── */}
-         {selectedItem && (
-          <DetailModal
-            item={selectedItem}
-            onClose={() => setSelectedItem(null)}
-          />
-        )}
+      {selectedItem && (
+        <DetailModal
+          item={selectedItem}
+          onClose={() => setSelectedItem(null)}
+        />
+      )}
        
       {/* ── Global styles ── */}
       <style>{`
