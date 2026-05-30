@@ -1,4 +1,4 @@
-# 🖼️ CaptionAI: A Deep Learning Image Captioning System with TensorFlow and Keras
+# 🖼️ CaptionAI: A Deep Learning Image Captioning System using TensorFlow and Keras
 
 An AI-powered web application that automatically generates natural language captions for uploaded images using a custom-built deep learning model trained from scratch.
 
